@@ -2,7 +2,7 @@
 
 *Oliver Lindemann*
 
-Description and analysis can be found also here: https://lindemann09.github.io/data_smlp2022/
+Find the description of the data in `Rmd`-file or see the analysis outcome online here: https://lindemann09.github.io/data_smlp2022/
 
 ### Licence
 
