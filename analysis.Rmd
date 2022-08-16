@@ -11,21 +11,42 @@ library(tidyverse)
 library(lme4)
 ```
 
-# Definition of congruency parameter
+# Description
 
-Congruency is defined as $$c =  \frac{v}{3}  \cdot \frac{n-5}{4} = \frac{v(n-5)}{12}$$
+The study aims to examine the interactions of space- and size-congruity effects while number processing.
 
-```{r def congruency}
-congruency_parameter = function(num_size, variable) {
+The numbers 1 to 9 ($N$) were presented in different six font sizes ($V_\text{size}=[-3, -2, -1, 1, 2, 3]$) and at six different stimulus locations (three left and three right from screen center, $V_\text{space}=[-3, -2, -1, 1, 2, 3]$). For each trials, a size and space-congruity parameter, $C$, could be calculated that varies between $-1$ and $+1$ (see formula below).
+
+The mixed effect model of the reaction times aims to consider besides these congruity parameters and the size- or space-congruity in the previous trial ($n-1$, 'Gratton effect').
+
+Congruity was defined as $$C =  \frac{V}{3}  \cdot \frac{N-5}{4} = \frac{V(N-5)}{12}$$
+
+```{r def congruity, echo=FALSE}
+congruity_parameter = function(num_size, variable) {
   n = num_size
   v = variable
   return(v*(n-5)/12)
 }
 ```
 
-# Data Preprocessing
+# Data
 
-```{r}
+## Code book (of the relevant vaiables)
+
+-   **`Subject`**: Subject ID
+-   **`digit`**: Presented digit (1 to 9, except 5)
+-   **`rt`**: Reaction time in ms
+-   **`size_rc`**: Stimulus size (-3 to +3) (recalculated)
+-   **`pos_rc`**: Stimulus position (-3 to +3) (recalculated)
+-   **`numerical_distance`**: Distance to 5 (abs(5-digit))
+-   **`SiC`**: Size congruity parameter (-1 to +1)
+-   **`SpC`**: Spatial congruity parameter (-1 to +1)
+-   **`P_SiC`**: Size congruity of the previous trial (-1 to +1)
+-   **`P_SpC`**: Spatial congruity of the previous trial (-1 to +1)
+
+```{r, echo=FALSE}
+# Data proprocessing
+
 raw = read_csv("WBL16_raw_data.csv", na =c("NA", "None"), show_col_types = FALSE) %>%
     mutate(Subject = as_factor(Subject),
            resp = factor(resp, levels=c(32, 105, 111), labels=c("no", "ti", "to")), 
@@ -38,48 +59,39 @@ data = raw %>%
     mutate(
       magnitude = factor(digit >5, levels=c(FALSE,TRUE),
                         labels=c("small", "large")),
-      pos_cat = factor(pos > 0, levels=c(FALSE, TRUE),
-                        labels=c("left", "right")),
-      size_cat = factor(size > 100, levels=c(FALSE, TRUE),
-                        labels=c("small", "large")),
       pos_rc = pos/100, # pos recoded
       size_rc = as.integer(as.factor(size))-4, # size recoded to -3,-2,-1,1,2,3
       size_rc = ifelse(size_rc>=0, size_rc+1, size_rc),
       numerical_distance = abs(digit-5),
-      SiC = congruency_parameter(digit, size_rc),
-      SpC = congruency_parameter(digit, pos_rc)
+      SiC = congruity_parameter(digit, size_rc),
+      SpC = congruity_parameter(digit, pos_rc)
       )
-```
 
-## Determine congruency of previous trails (Gratton effect)
-
-```{r}
+# Determine congruity of previous trails (Gratton effect)
 # previous size and space congruence
 data = data %>% 
   mutate(P_SiC = append(NA, SiC[2:n()-1]),
          P_SpC = append(NA, SpC[2:n()-1]))
 
-# set first "previous congruency" of each subject to NaN
+# set first "previous congruity" of each subject to NaN
 for (x in unique(data$Subject)) {
   t = min(subset(data, Subject==x)$trial)
   idx = which((data$Subject==x) & (data$trial==t))
   data[idx,"P_SiC"]  = NA
   data[idx,"P_SpC"]  = NA
 }
-```
 
-## Check data
-
-```{r}
-glimpse(data)
-xtabs(~data$Subject)
-xtabs(~pos_rc+size_rc, data=data)
-```
 
 ## Select data
+rt.data = data %>%
+  filter(error==0, resp !="no", rt>200) %>%
+  select(-trial, -resp, -magnitude, -mapping, -error, -ISI)
+```
+
+## Show data
 
 ```{r}
-rt.data = filter(data, error==0, resp !="no", rt>200)
+glimpse(rt.data)
 ```
 
 # Linear Mixed Effects Model Analyses
@@ -146,7 +158,7 @@ model.nd_sic = lmer(rt~ numerical_distance + size_rc + pos_rc +
                        REML =FALSE, data =rt.data)
 anova(model.nd, model.nd_sic)
 
-# testing random slope for spatial congruency
+# testing random slope for spatial congruity
 model.nd_spc = lmer(rt~ numerical_distance + size_rc + pos_rc +
                          SiC*SpC*P_SiC*P_SpC +
                          SiC:SpC +
@@ -158,7 +170,7 @@ model.nd_spc = lmer(rt~ numerical_distance + size_rc + pos_rc +
                        REML =FALSE, data =rt.data)
 anova(model.nd, model.nd_spc)
 
-# testing random slope for previous size congruency
+# testing random slope for previous size congruity
 model.nd_psic = lmer(rt~ numerical_distance + size_rc + pos_rc +
                          SiC*SpC*P_SiC*P_SpC +
                          SiC:SpC +
@@ -170,7 +182,7 @@ model.nd_psic = lmer(rt~ numerical_distance + size_rc + pos_rc +
                        REML =FALSE, data =rt.data)
 anova(model.nd, model.nd_psic)
 
-# testing random slope for previous position congruency
+# testing random slope for previous position congruity
 model.nd_pspc = lmer(rt~ numerical_distance + size_rc + pos_rc +
                          SiC*SpC*P_SiC*P_SpC +
                          SiC:SpC +
@@ -183,7 +195,8 @@ model.nd_pspc = lmer(rt~ numerical_distance + size_rc + pos_rc +
 anova(model.nd, model.nd_pspc)
 ```
 
-## Summary of best fitting model
+## Result of best fitting model
+
 ```{r best_model}
 #### Best model with random slopes for numerical distance only 
 summary(model.nd)
@@ -191,7 +204,16 @@ summary(model.nd)
 
 # Plotting
 
-```{r}
+```{r, echo=FALSE}
+rt.data = rt.data %>%
+    mutate(
+      pos_cat = factor(pos > 0, levels=c(FALSE, TRUE),
+                        labels=c("left", "right")),
+      size_cat = factor(size > 100, levels=c(FALSE, TRUE),
+                        labels=c("small", "large"))
+    )
+
+
 m = length(unique(rt.data$digit)) * length(unique(rt.data$size_cat)) *
               length(unique(rt.data$pos_cat))
 tmp = rt.data %>%
