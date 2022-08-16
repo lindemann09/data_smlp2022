@@ -392,10 +392,7 @@ model</a></li>
 </div>
 
 <pre class="r"><code>library(tidyverse)
-library(lme4)
-library(lmerTest)
-library(afex)
-library(stringr)</code></pre>
+library(lme4)</code></pre>
 <div id="definition-of-congruency-parameter" class="section level1">
 <h1>Definition of congruency parameter</h1>
 <p>Congruency is defined as <span class="math display">\[c
@@ -653,8 +650,7 @@ model.nd_pspc = lmer(rt~ numerical_distance + size_rc + pos_rc +
 <h2>Summary of best fitting model</h2>
 <pre class="r"><code>#### Best model with random slopes for numerical distance only 
 summary(model.nd)</code></pre>
-<pre><code>## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite&#39;s
-##   method [lmerModLmerTest]
+<pre><code>## Linear mixed model fit by maximum likelihood  [&#39;lmerMod&#39;]
 ## Formula: rt ~ numerical_distance + size_rc + pos_rc + SiC * SpC * P_SiC *  
 ##     P_SpC + SiC:SpC + SiC:P_SiC + SiC:P_SpC + SpC:P_SiC + SpC:P_SpC +  
 ##     (1 + numerical_distance | Subject)
@@ -675,28 +671,26 @@ summary(model.nd)</code></pre>
 ## Number of obs: 12305, groups:  Subject, 44
 ## 
 ## Fixed effects:
-##                       Estimate Std. Error         df t value Pr(&gt;|t|)    
-## (Intercept)           653.5512    12.2554    43.9798  53.328  &lt; 2e-16 ***
-## numerical_distance    -14.3547     1.3072    43.7187 -10.981 3.75e-14 ***
-## size_rc                -7.6823     0.4721 12218.5107 -16.274  &lt; 2e-16 ***
-## pos_rc                  0.4158     0.4714 12218.2376   0.882   0.3778    
-## SiC                    -4.4660     2.0662 12218.8329  -2.161   0.0307 *  
-## SpC                    -8.4678     2.0627 12218.1778  -4.105 4.06e-05 ***
-## P_SiC                   0.1565     2.0664 12241.0561   0.076   0.9396    
-## P_SpC                  -0.2925     2.0646 12238.8066  -0.142   0.8873    
-## SiC:SpC                 0.4033     3.3371 12218.4451   0.121   0.9038    
-## SiC:P_SiC             -13.6809     4.4052 12251.5774  -3.106   0.0019 ** 
-## SpC:P_SiC              -6.9667     4.4097 12248.1092  -1.580   0.1142    
-## SiC:P_SpC               6.5869     4.3800 12252.9322   1.504   0.1326    
-## SpC:P_SpC              -8.6382     4.3485 12247.5507  -1.986   0.0470 *  
-## P_SiC:P_SpC            -0.3882     3.3402 12247.3057  -0.116   0.9075    
-## SiC:SpC:P_SiC          -7.1296     7.3245 12255.9598  -0.973   0.3304    
-## SiC:SpC:P_SpC          -4.5887     7.1621 12255.3557  -0.641   0.5217    
-## SiC:P_SiC:P_SpC         6.9665     7.3110 12258.6079   0.953   0.3407    
-## SpC:P_SiC:P_SpC        -3.7709     7.2273 12253.9026  -0.522   0.6018    
-## SiC:SpC:P_SiC:P_SpC   -10.8867    12.1379 12257.7530  -0.897   0.3698    
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+##                     Estimate Std. Error t value
+## (Intercept)         653.5512    12.2554  53.328
+## numerical_distance  -14.3547     1.3072 -10.981
+## size_rc              -7.6823     0.4721 -16.274
+## pos_rc                0.4158     0.4714   0.882
+## SiC                  -4.4660     2.0662  -2.161
+## SpC                  -8.4678     2.0627  -4.105
+## P_SiC                 0.1565     2.0664   0.076
+## P_SpC                -0.2925     2.0646  -0.142
+## SiC:SpC               0.4033     3.3371   0.121
+## SiC:P_SiC           -13.6809     4.4052  -3.106
+## SpC:P_SiC            -6.9667     4.4097  -1.580
+## SiC:P_SpC             6.5869     4.3800   1.504
+## SpC:P_SpC            -8.6382     4.3485  -1.986
+## P_SiC:P_SpC          -0.3882     3.3402  -0.116
+## SiC:SpC:P_SiC        -7.1296     7.3245  -0.973
+## SiC:SpC:P_SpC        -4.5887     7.1621  -0.641
+## SiC:P_SiC:P_SpC       6.9665     7.3110   0.953
+## SpC:P_SiC:P_SpC      -3.7709     7.2273  -0.522
+## SiC:SpC:P_SiC:P_SpC -10.8867    12.1379  -0.897</code></pre>
 <pre><code>## 
 ## Correlation matrix not shown by default, as p = 19 &gt; 12.
 ## Use print(x, correlation=TRUE)  or

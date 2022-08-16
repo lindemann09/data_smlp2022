@@ -9,9 +9,6 @@ output:
 ```{r libs, warning=FALSE, message=FALSE}
 library(tidyverse)
 library(lme4)
-library(lmerTest)
-library(afex)
-library(stringr)
 ```
 
 # Definition of congruency parameter

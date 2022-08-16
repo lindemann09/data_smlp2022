@@ -2,7 +2,7 @@
 
 *Oliver Lindemann*
 
-Find the analysis outcome also here: 
+Find the analysis outcome also here: https://lindemann09.github.io/data_smlp2022/
 
 ### Code book
 
