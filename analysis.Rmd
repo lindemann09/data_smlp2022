@@ -15,9 +15,9 @@ library(lme4)
 
 The study aims to examine the interactions of space- and size-congruity effects while number processing.
 
-The numbers 1 to 9 ($N$) were presented in different six font sizes ($V_\text{size}=[-3, -2, -1, 1, 2, 3]$) and at six different stimulus locations (three left and three right from screen center, $V_\text{space}=[-3, -2, -1, 1, 2, 3]$). For each trials, a size and space-congruity parameter, $C$, could be calculated that varies between $-1$ and $+1$ (see formula below).
+The numbers 1 to 9 ($N$) were presented in different six font sizes ($V_\text{size}=[-3, -2, -1, 1, 2, 3]$) and at six different stimulus locations (three left and three right from screen center, $V_\text{space}=[-3, -2, -1, 1, 2, 3]$). For each trial, a size and space-congruity parameter, $C$, could be calculated that varies between $-1$ and $+1$ (see formula below).
 
-The mixed effect model of the reaction times aims to consider besides these congruity parameters and the size- or space-congruity in the previous trial ($n-1$, 'Gratton effect').
+The mixed effect model of the reaction times aims to consider, beside these two congruity parameters and their interaction, also the size- or space-congruity in the previous trial ($n-1$, 'Gratton effect').
 
 Congruity was defined as $$C =  \frac{V}{3}  \cdot \frac{N-5}{4} = \frac{V(N-5)}{12}$$
 
